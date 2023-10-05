@@ -47,7 +47,7 @@ gravados em arquivos).
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct 
 {
-	int cpf, rg, telefone, *dataNascimento;
+	int cpf, rg, telefone, *dataNascimento; // * armazenaria o endereço de memória onde um valor pode ser encontrado para criar os vetores dinamicamente
 	char *nome, *sexo;
 }Faxineiro;
 
@@ -64,7 +64,34 @@ void menuPrincipal(int *op)
 	printf("\n");
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void menuFaxineiros(struct Faxineiro *faxineiro, int contadorFaxineiros) 
+int verificarFaxineiro(Faxineiro *faxineiro, int cpfFaxineiro, int contadorFaxineiros)
+{
+	int i;
+	for (i=0; i<contadorFaxineiros; i++) {
+		if (faxineiro[i].cpf == cpfFaxineiro) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int incluiFaxineiro(Faxineiro *faxineiro, int *contadorFaxineiros)
+{	
+	int cpfFaxineiro, achou;
+	printf("Informe o cpf do faxineiro: ");
+	scanf("%d", &cpfFaxineiro);
+	achou = verificarFaxineiro(faxineiro, cpfFaxineiro, *contadorFaxineiros);
+	if (achou != -1) {
+		return achou;
+	}
+	else {
+		faxineiro[*contadorFaxineiros].cpf = cpfFaxineiro;  // faxineiro é um ponteiro para uma estrutura Faxineiro
+		(*contadorFaxineiros)++;
+		return -1;
+	}
+}
+
+void menuFaxineiros(Faxineiro *faxineiro, int *contadorFaxineiros) 
 {
 	int opcao;
 	system("cls");
@@ -84,7 +111,6 @@ void menuFaxineiros(struct Faxineiro *faxineiro, int contadorFaxineiros)
 		
 		switch (opcao) {
 			case 1: {
-				incluiFaxineiro(faxineiro, contadorFaxineiros);
 				system("cls");
 				break;
 			}
@@ -94,6 +120,12 @@ void menuFaxineiros(struct Faxineiro *faxineiro, int contadorFaxineiros)
 			}
 			case 3: {
 				system("cls");
+				if (incluiFaxineiro(faxineiro, &(*contadorFaxineiros)) != -1) {
+					printf("\nFaxineiro já cadastrado no sistema!\n");
+				}
+				else {
+					printf("\nFaxineiro cadastrado com sucesso!\n");
+				}
 				break;
 			}
 			case 4: {
@@ -116,11 +148,6 @@ void menuFaxineiros(struct Faxineiro *faxineiro, int contadorFaxineiros)
 			}
 		}
 	}while (opcao != 6);
-}
-
-void incluiFaxineiro(struct Faxineiro *faxineiro, int contadorFaxineiros)
-{
-	
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void menuClientes() 
@@ -231,18 +258,17 @@ void menuServicos()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 main () {
 	setlocale(LC_ALL, "Portuguese"); 
-	int op; 
+	int op, limiteSistema = 100; 
 	int contadorFaxineiros = 0; // contador para quantos faxineiros estão inseridos no sistema
 	Faxineiro *faxineiro; // crair o vetor dentro da main e mandar ele dps
-	int limite = 100; // limite de faxineiros, clientes e serviços inseridos no sistema
-	faxineiro = (int *) malloc(sizeof(Faxineiro)*limite);
+	faxineiro = (Faxineiro *) malloc(sizeof(Faxineiro)*limiteSistema); // aloca dinamicamente na memória para um único objeto do tipo Faxineiro
 
 	menuPrincipal(&op);
 	
 	do {
 		switch (op) {
 			case 1: { // caso a opção digitada for 1
-				menuFaxineiros(faxineiro, contadorFaxineiros);
+				menuFaxineiros(faxineiro, &contadorFaxineiros);
 				menuPrincipal(&op);
 				break;
 			}
