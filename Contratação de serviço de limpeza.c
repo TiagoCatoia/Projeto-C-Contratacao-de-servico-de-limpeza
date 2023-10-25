@@ -360,6 +360,13 @@ void menuFaxineiros(Faxineiro *faxineiro, int *contadorFaxineiros)
 	if (arquivoFaxineiros != NULL) {
 		*contadorFaxineiros = fread(faxineiro, sizeof(Faxineiro), 100, arquivoFaxineiros); // 100 representa o Tamanho Máximo do vetor faxineiro
 	}
+	else {
+		// O arquivo não existe, então tentamos criar um novo
+        arquivoFaxineiros = fopen("dados_faxineiros", "wb+");
+        if (arquivoFaxineiros == NULL) {
+            printf("Erro ao criar o arquivo!\n");
+        }
+	}
 	// Trata o caso de erro durante a leitura do Arquivo
 	if (ferror(arquivoFaxineiros)) {
         perror("Erro ao ler do arquivo");
