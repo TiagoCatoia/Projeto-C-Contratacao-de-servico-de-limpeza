@@ -1,50 +1,9 @@
-#include<stdio.h>
-#include<locale.h>
-#include<string.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <locale.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
-/*
-Um sistema para uma prestadora de serviço de limpeza (faxinas) precisa gerenciar os 
-dados sobre cada faxineiro(a) e os clientes que contratam os seus serviços. Os dados a serem 
-armazenados sobre cada entidade são apresentados a seguir: 
-Faxineiro = (CPF, RG, nome, sexo, data de nascimento, telefones) 
-Cliente = (CPF, nome, data de nascimento, endereço, CEP, cidade, e-mails, telefones) 
-Serviço = (CPF faxineiro, CPF cliente, data, valor) 
-Atenção: os atributos grifados são chaves e você NÃO deve permitir a inclusão de mais 
-de um cadastro com os mesmos valores para os atributos chaves. 
-Utilizando os conhecimentos aprendidos sobre Vetores, Strings, Registros e Funções 
-desenvolva um programa em C que apresente o seguinte menu de opções para o usuário e 
-implemente cada operação usando função. Escolha a estrutura de dados mais apropriada para 
-armazenar os dados de cada entidade descrita anteriormente.
-
-Menu Principal: 
-1. Submenu de Faxineiros 
-2. Submenu de Clientes 
-3. Submenu de Serviços 
-4. Submenu Relatórios 
-5. Sair 
-
-Cada Submenu deverá oferecer as opções: Listar todos, Listar um, Incluir (sem 
-repetição), Alterar e Excluir (após confirmação dos dados) um elemento do conjunto. O 
-Submenu Relatórios deverá ter uma opção para cada um dos relatórios solicitados abaixo. 
-Relatórios: 
-a) Mostrar o nome, os e-mails e telefones de todos(as) os(as) clientes que contrataram 
-o serviço de determinado(a) faxineiro(a) entre as datas X e Y. O CPF do(a) 
-faxineiro(a) e as datas deverão ser fornecidos pelo usuário;
-
-b) Mostrar os dados de todos os serviços contratados para uma data específica a ser 
-fornecida pelo usuário. Apresente também o nome do(a) faxineiro(a) e do(a) cliente; 
-c) Mostrar os dados de todos os serviços realizados por determinado(a) faxineiro(a),
-cujo CPF será fornecido pelo usuário.
-
-A aplicação deverá utilizar Arquivos para a persistência dos dados. Em outras palavras, cada 
-registro de Faxineiro, Cliente e Serviço deverá ser armazenado em um arquivo binário
-específico, que conterá apenas registros daquele mesmo tipo de entidade. Para os relatórios 
-você deverá usar arquivos textos. Utilize estruturas dinâmicas como vetores e registros 
-alocados dinamicamente para o armazenamento temporário dos dados (ou seja, antes de serem 
-gravados em arquivos). 
-*/
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct 
 {
 	int dataNascimento[3];
@@ -78,138 +37,51 @@ void menuPrincipal(int *op)
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void lendoDadosDoArquivo(Faxineiro *faxineiro, Cliente *cliente, Servico *servico, int *contadorCadastros)
+lendoDadosFaxineiros(Faxineiro *faxineiro, int *contadorFaxineiros)
 {
-	if  (faxineiro != 0) {
-		// Crinado um ponteiro para o Arquivo de Faxineiros
-		FILE *arquivoFaxineiros;
-		
-		// Abre o Arquivo Binário no modo de Escrita e Leitura
-		arquivoFaxineiros = fopen("dados_faxineiros", "rb+");
-		
-		// Verifica se o Arquivo Existe ou está Vazio
-		// Caso o Arquivo não exista ou está vazio, então o vetor faxineiro e o contador são utilizados como vazio assim como definidos na main
-		// Caso o arquivo exista os dados são carregados para o vetor e o contador
-		if (arquivoFaxineiros != NULL) {
-			// Lê os dados do arquivo
-			*contadorCadastros = fread(faxineiro, sizeof(Faxineiro), 100, arquivoFaxineiros); // Tenta ler 100 elementos de dados do Arquivo de Faxineiro
-		}
-		else {
-			// O arquivo não existe, então tentamos criar um novo
-	        arquivoFaxineiros = fopen("dados_faxineiros", "wb+");
-	        if (arquivoFaxineiros == NULL) {
-	            printf("Erro ao criar o arquivo!\n");
-			}
-		}
-		
-		// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
-		fclose(arquivoFaxineiros);
+	// Crinado um ponteiro para o Arquivo de Faxineiros
+	FILE *arquivoFaxineiros;
+	
+	// Abre o Arquivo Binário no modo de Escrita e Leitura
+	arquivoFaxineiros = fopen("dados_faxineiros", "rb+");
+	
+	// Verifica se o Arquivo Existe ou está Vazio
+	// Caso o Arquivo não exista ou está vazio, então o vetor faxineiro e o contador são utilizados como vazio assim como definidos na main
+	// Caso o arquivo exista os dados são carregados para o vetor e o contador
+	if (arquivoFaxineiros != NULL) {
+		// Lê os dados do arquivo
+		*contadorFaxineiros = fread(faxineiro, sizeof(Faxineiro), 100, arquivoFaxineiros); // Tenta ler 100 elementos de dados do Arquivo de Faxineiro
 	}
-	else if (cliente != 0) {
-		// Crinado um ponteiro para o Arquivo de Clientes
-		FILE *arquivoClientes;
-		
-		// Abre o Arquivo Binário no modo de Escrita e Leitura
-		arquivoClientes = fopen("dados_clientes", "rb+");
-		
-		// Verifica se o Arquivo Existe ou está Vazio
-		// Caso o Arquivo não exista ou está vazio, então o vetor cliente e o contador são utilizados como vazio assim como definidos na main
-		// Caso o arquivo exista os dados são carregados para o vetor e o contador
-		if (arquivoClientes != NULL) {
-			// Lê os dados do arquivo
-			*contadorCadastros = fread(cliente, sizeof(Cliente), 100, arquivoClientes); // Tenta ler 100 elementos de dados do Arquivo de Clientes
+	else {
+		// O arquivo não existe, então tentamos criar um novo
+        arquivoFaxineiros = fopen("dados_faxineiros", "wb+");
+        if (arquivoFaxineiros == NULL) {
+            printf("Erro ao criar o arquivo!\n");
 		}
-		else {
-			// O arquivo não existe, então tentamos criar um novo
-	        arquivoClientes = fopen("dados_clientes", "wb+");
-	        if (arquivoClientes == NULL) {
-	            printf("Erro ao criar o arquivo!\n");
-			}
-		}
-		
-		// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
-		fclose(arquivoClientes);
 	}
-	else if (servico != 0) {
-		// Crinado um ponteiro para o Arquivo de Serviços
-		FILE *arquivoServicos;
-		
-		// Abre o Arquivo Binário no modo de Escrita e Leitura
-		arquivoServicos = fopen("dados_servicos", "rb+");
-		
-		// Verifica se o Arquivo Existe ou está Vazio
-		// Caso o Arquivo não exista ou está vazio, então o vetor servico e o contador são utilizados como vazio assim como definidos na main
-		// Caso o arquivo exista os dados são carregados para o vetor e o contador
-		if (arquivoServicos != NULL) {
-			// Lê os dados do arquivo
-			*contadorCadastros = fread(servico, sizeof(Servico), 100, arquivoServicos); // Tenta ler 100 elementos de dados do Arquivo de Serviços
-		}
-		else {
-			// O arquivo não existe, então tentamos criar um novo
-	        arquivoServicos = fopen("dados_servicos", "wb+");
-	        if (arquivoServicos == NULL) {
-	            printf("Erro ao criar o arquivo!\n");
-			}
-		}
-		
-		// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
-		fclose(arquivoServicos);
-	}
+	
+	// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
+	fclose(arquivoFaxineiros);
 }
 
-void gravandoDadosNoArquivo(Faxineiro *faxineiro, Cliente *cliente, Servico *servico, int *contadorCadastros)
+gravandoDadosFaxineiros(Faxineiro *faxineiro, int *contadorFaxineiros)
 {
-	if  (faxineiro != 0) {
-		// Crinado um ponteiro para o Arquivo de Faxineiros
-		FILE *arquivoFaxineiros;
-		
-		// Abre o Arquivo Binário no modo de Escrita e Leitura
-		arquivoFaxineiros = fopen("dados_faxineiros", "rb+");
-		
-		// Posiciona o ponteiro no início do arquivo para substituir os dados já carregados (SEEK_SET)
-		fseek(arquivoFaxineiros, 0, SEEK_SET);
-		
-		// Gravando os Dados dos Faxineiros no Arquivo Binário
-		fwrite(faxineiro, sizeof(Faxineiro), *contadorCadastros, arquivoFaxineiros); // o contadorCadastros representa quantos faxineiros estão sendo gravados
-		
-		// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
-		fclose(arquivoFaxineiros);
-	}
-	else if (cliente != 0) {
-		// Crinado um ponteiro para o Arquivo de Clientes
-		FILE *arquivoClientes;
-		
-		// Abre o Arquivo Binário no modo de Escrita e Leitura
-		arquivoClientes = fopen("dados_clientes", "rb+");
-		
-		// Posiciona o ponteiro no início do arquivo para substituir os dados já carregados (SEEK_SET)
-		fseek(arquivoClientes, 0, SEEK_SET);
-		
-		// Gravando os Dados dos Faxineiros no Arquivo Binário
-		fwrite(cliente, sizeof(Cliente), *contadorCadastros, arquivoClientes); // o contadorCadastros representa quantos clientes estão sendo gravados
-		
-		// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
-		fclose(arquivoClientes);
-	}
-	else if (servico != 0) {
-		// Crinado um ponteiro para o Arquivo de Serviços
-		FILE *arquivoServicos;
-		
-		// Abre o Arquivo Binário no modo de Escrita e Leitura
-		arquivoServicos = fopen("dados_servicos", "rb+");
-		
-		// Posiciona o ponteiro no início do arquivo para substituir os dados já carregados (SEEK_SET)
-		fseek(arquivoServicos, 0, SEEK_SET);
-		
-		// Gravando os Dados dos Faxineiros no Arquivo Binário
-		fwrite(servico, sizeof(Servico), *contadorCadastros, arquivoServicos); // o contadorCadastros representa quantos servicos estão sendo gravados
-		
-		// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
-		fclose(arquivoServicos);
-	}
+	// Crinado um ponteiro para o Arquivo de Faxineiros
+	FILE *arquivoFaxineiros;
+	
+	// Abre o Arquivo Binário no modo de Escrita e Leitura
+	arquivoFaxineiros = fopen("dados_faxineiros", "rb+");
+	
+	// Posiciona o ponteiro no início do arquivo para substituir os dados já carregados (SEEK_SET)
+	fseek(arquivoFaxineiros, 0, SEEK_SET);
+	
+	// Gravando os Dados dos Faxineiros no Arquivo Binário
+	fwrite(faxineiro, sizeof(Faxineiro), *contadorFaxineiros, arquivoFaxineiros); // o contadorCadastros representa quantos faxineiros estão sendo gravados
+	
+	// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
+	fclose(arquivoFaxineiros);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int verificarFaxineiro(Faxineiro *faxineiro, char cpfFaxineiro[], int contadorFaxineiros)
 {
 	int i, resultado;
@@ -238,10 +110,8 @@ int listarTodosFaxineiros(Faxineiro *faxineiro, int *contadorFaxineiros)
 			printf("RG: %s\n", faxineiro[i].rg);
 			printf("CPF: %s\n", faxineiro[i].cpf);
 			printf("Telefones: | ");
-			for (y=0; y<50; y++) {
-				if (faxineiro[i].telefone[y][0] != '\0') {
-        			printf("%s | ", faxineiro[i].telefone[y]);
-    			}
+			for (y=0; faxineiro[i].telefone[y][0] != '\0'; y++) {
+        		printf("%s | ", faxineiro[i].telefone[y]);
 			}
 			printf("\n\n");
 		}
@@ -268,10 +138,8 @@ int listarUmFaxineiro(Faxineiro *faxineiro, int *contadorFaxineiros)
 		printf("RG: %s\n", faxineiro[achou].rg);
 		printf("CPF: %s\n", faxineiro[achou].cpf);
 		printf("Telefones: | ");
-		for (i=0; i<50; i++) {
-			if (faxineiro[achou].telefone[i][0] != '\0') {
-        		printf("%s | ", faxineiro[achou].telefone[i]);
-    		}
+		for (i=0; faxineiro[achou].telefone[i][0] != '\0'; i++) {
+        	printf("%s | ", faxineiro[achou].telefone[i]);
 		}
 		printf("\n\n");
 	}
@@ -410,21 +278,17 @@ int alterarDadosFaxineiro(Faxineiro *faxineiro, int *contadorFaxineiros)
 				char telefoneAlterar[50];
 				
 				printf("Telefones Atuais: | ");
-				for (i=0; i<50; i++) {
-					if (faxineiro[achou].telefone[i][0] != '\0') {
-	        			printf("%s | ", faxineiro[achou].telefone[i]);
-	    			}
+				for (i=0; faxineiro[achou].telefone[i][0] != '\0'; i++) {
+	        		printf("%s | ", faxineiro[achou].telefone[i]);
 				}
 				printf("\nDigite o Telefone que deseja alterar: ");
 				fflush(stdin);
 				gets(telefoneAlterar);
-				for (i=0; i<50; i++) {
-					if (faxineiro[achou].telefone[i][0] != '\0') {
-	        			if (strcmp(faxineiro[achou].telefone[i], telefoneAlterar) == 0) {
-	        				printf("Informe o novo Telefone: ");
-	        				gets(faxineiro[achou].telefone[i]);
-	        				return 1;
-						}
+				for (i=0; faxineiro[achou].telefone[i][0] != '\0'; i++) {
+	        		if (strcmp(faxineiro[achou].telefone[i], telefoneAlterar) == 0) {
+	        			printf("Informe o novo Telefone: ");
+	        			gets(faxineiro[achou].telefone[i]);
+	        			return 1;
 	    			}
 				}
 				printf("\nO Faxineiro não possui esse telefone!\n");
@@ -463,10 +327,8 @@ int excluirFaxineiro(Faxineiro *faxineiro, int *contadorFaxineiros)
 		printf("%d/%d/%d\n", faxineiro[achou].dataNascimento[0], faxineiro[achou].dataNascimento[1], faxineiro[achou].dataNascimento[2]);
 		printf("RG: %s\n", faxineiro[achou].rg);
 		printf("Telefones: | ");
-		for (i=0; i<50; i++) {
-			if (faxineiro[achou].telefone[i][0] != '\0') {
-        		printf("%s | ", faxineiro[achou].telefone[i]);
-    		}
+		for (i=0; faxineiro[achou].telefone[i][0] != '\0'; i++) {
+        	printf("%s | ", faxineiro[achou].telefone[i]);
 		}
 		printf("\nCPF: %s\n", faxineiro[achou].cpf);
 		printf("\nExcluindo do Sistema...\n");
@@ -483,7 +345,7 @@ int excluirFaxineiro(Faxineiro *faxineiro, int *contadorFaxineiros)
 void menuFaxineiros(Faxineiro *faxineiro, int *contadorFaxineiros) 
 {	
 	// Carrega os dados do Arquivo de Faxineiros para o vetor faxineiro e para o contadorFaxineiros
-	lendoDadosDoArquivo(faxineiro, 0, 0, &(*contadorFaxineiros));
+	lendoDadosFaxineiros(faxineiro, &(*contadorFaxineiros));
 	
 	int opcao;
 	system("cls");
@@ -558,10 +420,8 @@ void menuFaxineiros(Faxineiro *faxineiro, int *contadorFaxineiros)
 			case 6: {
 				system("cls");
 				printf("Voltando para o menu principal...\n\n");
-				
 				// Grava os dados do vetor faxineiro e do contadorFaxineiros para o Arquivo de Faxineiros
-				gravandoDadosNoArquivo(faxineiro, 0, 0, &(*contadorFaxineiros));
-				
+				gravandoDadosFaxineiros(faxineiro, &(*contadorFaxineiros));
 				break;
 			}
 			default: {
@@ -573,6 +433,51 @@ void menuFaxineiros(Faxineiro *faxineiro, int *contadorFaxineiros)
 	}while (opcao != 6);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+lendoDadosClientes(Cliente *cliente, int *contadorClientes)
+{
+	// Crinado um ponteiro para o Arquivo de Clientes
+	FILE *arquivoClientes;
+	
+	// Abre o Arquivo Binário no modo de Escrita e Leitura
+	arquivoClientes = fopen("dados_clientes", "rb+");
+	
+	// Verifica se o Arquivo Existe ou está Vazio
+	// Caso o Arquivo não exista ou está vazio, então o vetor cliente e o contador são utilizados como vazio assim como definidos na main
+	// Caso o arquivo exista os dados são carregados para o vetor e o contador
+	if (arquivoClientes != NULL) {
+		// Lê os dados do arquivo
+		*contadorClientes = fread(cliente, sizeof(Cliente), 100, arquivoClientes); // Tenta ler 100 elementos de dados do Arquivo de Clientes
+	}
+	else {
+		// O arquivo não existe, então tentamos criar um novo
+        arquivoClientes = fopen("dados_clientes", "wb+");
+        if (arquivoClientes == NULL) {
+            printf("Erro ao criar o arquivo!\n");
+		}
+	}
+	
+	// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
+	fclose(arquivoClientes);
+}
+
+gravandoDadosClientes(Cliente *cliente, int *contadorClientes)
+{
+	// Crinado um ponteiro para o Arquivo de Clientes
+	FILE *arquivoClientes;
+	
+	// Abre o Arquivo Binário no modo de Escrita e Leitura
+	arquivoClientes = fopen("dados_clientes", "rb+");
+	
+	// Posiciona o ponteiro no início do arquivo para substituir os dados já carregados (SEEK_SET)
+	fseek(arquivoClientes, 0, SEEK_SET);
+	
+	// Gravando os Dados dos Faxineiros no Arquivo Binário
+	fwrite(cliente, sizeof(Cliente), *contadorClientes, arquivoClientes); // o contadorCadastros representa quantos clientes estão sendo gravados
+	
+	// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
+	fclose(arquivoClientes);
+}
 
 int verificarCliente(Cliente *cliente, char cpfCliente[], int contadorClientes)
 {
@@ -608,21 +513,15 @@ int listarTodosClientes(Cliente *cliente, int *contadorClientes)
 			printf("CEP: %s\n", cliente[i].cep);
 			printf("Cidade: %s\n", cliente[i].cidade);
 			printf("E-mails: | ");
-			for (y = 0; y < 50; y++)
+			for (y = 0; cliente[i].email[y][0] != '\0'; y++)
 			{
-				if (cliente[i].email[y][0] != '\0')
-				{
-					printf("%s | ", cliente[i].email[y]);
-				}
+				printf("%s | ", cliente[i].email[y]);
 			}
 			printf("\n");
 			printf("Telefones: | ");
-			for (y = 0; y < 50; y++)
+			for (y = 0; cliente[i].telefone[y][0] != '\0'; y++)
 			{
-				if (cliente[i].telefone[y][0] != '\0')
-				{
-					printf("%s | ", cliente[i].telefone[y]);
-				}
+				printf("%s | ", cliente[i].telefone[y]);
 			}
 			printf("\n\n");
 		}
@@ -653,21 +552,15 @@ int listarUmCliente(Cliente *cliente, int *contadorClientes)
 		printf("Cidade: %s\n", cliente[achou].cidade);
 		printf("E-mails: | ");
 		int y;
-		for (y = 0; y < 50; y++)
+		for (y = 0; cliente[achou].email[y][0] != '\0'; y++)
 		{
-			if (cliente[achou].email[y][0] != '\0')
-			{
-				printf("%s | ", cliente[achou].email[y]);
-			}
+			printf("%s | ", cliente[achou].email[y]);
 		}
 		printf("\n");
 		printf("Telefones: | ");
-		for (y = 0; y < 50; y++)
+		for (y = 0; cliente[achou].telefone[y][0] != '\0'; y++)
 		{
-			if (cliente[achou].telefone[y][0] != '\0')
-			{
-				printf("%s | ", cliente[achou].telefone[y]);
-			}
+			printf("%s | ", cliente[achou].telefone[y]);
 		}
 		printf("\n\n");
 	}
@@ -854,22 +747,18 @@ int alterarDadosCliente(Cliente *cliente, int *contadorClientes)
 			char emailAlterar[50];
 
 			printf("E-mails Atuais: | ");;
-			for (i=0; i<50; i++) {
-				if (cliente[achou].email[i][0] != '\0') {
-        			printf("%s | ", cliente[achou].email[i]);
-    			}
+			for (i=0; cliente[achou].email[i][0] != '\0'; i++) {
+        		printf("%s | ", cliente[achou].email[i]);
 			}
 			printf("\nDigite o E-mail que deseja alterar: ");
 			fflush(stdin);
 			gets(emailAlterar);
-			for (i=0; i<50; i++) {
-				if (cliente[achou].email[i][0] != '\0') {
-        			if (strcmp(cliente[achou].email[i], emailAlterar) == 0) {
-        				printf("Informe o novo E-mail: ");
-        				gets(cliente[achou].email[i]);
-        				return 1;
-					}
-    			}
+			for (i=0; cliente[achou].email[i][0] != '\0'; i++) {
+        		if (strcmp(cliente[achou].email[i], emailAlterar) == 0) {
+        			printf("Informe o novo E-mail: ");
+        			gets(cliente[achou].email[i]);
+        			return 1;
+				}
 			}
 			printf("\nO Cliente não possui esse E-mail!\n");
 			return -2;
@@ -880,22 +769,18 @@ int alterarDadosCliente(Cliente *cliente, int *contadorClientes)
 			char telefoneAlterar[50];
 
 			printf("Telefones Atuais: | ");
-			for (i=0; i<50; i++) {
-				if (cliente[achou].telefone[i][0] != '\0') {
-        			printf("%s | ", cliente[achou].telefone[i]);
-    			}
+			for (i=0; cliente[achou].telefone[i][0] != '\0'; i++) {
+        		printf("%s | ", cliente[achou].telefone[i]);
 			}
 			printf("\nDigite o Telefone que deseja alterar: ");
 			fflush(stdin);
 			gets(telefoneAlterar);
-			for (i=0; i<50; i++) {
-				if (cliente[achou].telefone[i][0] != '\0') {
-        			if (strcmp(cliente[achou].telefone[i], telefoneAlterar) == 0) {
-        				printf("Informe o novo Telefone: ");
-        				gets(cliente[achou].telefone[i]);
-        				return 1;
-					}
-    			}
+			for (i=0; cliente[achou].telefone[i][0] != '\0'; i++) {
+        		if (strcmp(cliente[achou].telefone[i], telefoneAlterar) == 0) {
+        			printf("Informe o novo Telefone: ");
+        			gets(cliente[achou].telefone[i]);
+        			return 1;
+				}
 			}
 			printf("\nO Cliente não possui esse Telefone!\n");
 			return -2;
@@ -933,20 +818,14 @@ int excluirCliente(Cliente *cliente, int *contadorClientes)
 		printf("CEP: %s\n", cliente[achou].cep);
 		printf("Cidade: %s\n", cliente[achou].cidade);
 		printf("E-mails: %s\n", cliente[achou].email);
-		for (i = 0; i < 50; i++)
+		for (i = 0; cliente[achou].email[i][0] != '\0'; i++)
 		{
-			if (cliente[achou].email[i][0] != '\0')
-			{
-				printf("%s | ", cliente[achou].email[i]);
-			}
+			printf("%s | ", cliente[achou].email[i]);
 		}
 		printf("Telefones: | ");
-		for (i = 0; i < 50; i++)
+		for (i = 0; cliente[achou].telefone[i][0] != '\0'; i++)
 		{
-			if (cliente[achou].telefone[i][0] != '\0')
-			{
-				printf("%s | ", cliente[achou].telefone[i]);
-			}
+			printf("%s | ", cliente[achou].telefone[i]);
 		}
 		printf("\n");
 		printf("\nExcluindo do Sistema...\n");
@@ -964,7 +843,7 @@ int excluirCliente(Cliente *cliente, int *contadorClientes)
 void menuClientes(Cliente *cliente, int *contadorClientes) 
 {
 	// Carrega os dados do Arquivo de Clientes para o vetor cliente e para o contadorClientes
-	lendoDadosDoArquivo(0, cliente, 0, &(*contadorClientes));
+	lendoDadosClientes(cliente, &(*contadorClientes));
 	
 	int opcao;
 	system("cls");
@@ -1045,10 +924,8 @@ void menuClientes(Cliente *cliente, int *contadorClientes)
 			case 6: {
 				system("cls");
 				printf("Voltando para o menu principal...\n\n");
-				
 				// Grava os dados do vetor cliente e do contadorClientes para o Arquivo de Clientes
-				gravandoDadosNoArquivo(0, cliente, 0, &(*contadorClientes));
-				
+				gravandoDadosClientes(cliente, &(*contadorClientes));
 				break;
 			}
 			default: {
@@ -1060,6 +937,51 @@ void menuClientes(Cliente *cliente, int *contadorClientes)
 	}while (opcao != 6);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+lendoDadosServicos(Servico *servico, int *contadorServicos)
+{
+	// Crinado um ponteiro para o Arquivo de Serviços
+	FILE *arquivoServicos;
+	
+	// Abre o Arquivo Binário no modo de Escrita e Leitura
+	arquivoServicos = fopen("dados_servicos", "rb+");
+	
+	// Verifica se o Arquivo Existe ou está Vazio
+	// Caso o Arquivo não exista ou está vazio, então o vetor servico e o contador são utilizados como vazio assim como definidos na main
+	// Caso o arquivo exista os dados são carregados para o vetor e o contador
+	if (arquivoServicos != NULL) {
+		// Lê os dados do arquivo
+		*contadorServicos = fread(servico, sizeof(Servico), 100, arquivoServicos); // Tenta ler 100 elementos de dados do Arquivo de Serviços
+	}
+	else {
+		// O arquivo não existe, então tentamos criar um novo
+        arquivoServicos = fopen("dados_servicos", "wb+");
+        if (arquivoServicos == NULL) {
+            printf("Erro ao criar o arquivo!\n");
+		}
+	}
+	
+	// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
+	fclose(arquivoServicos);
+}
+
+gravandoDadosServicos(Servico *servico, int *contadorServicos)
+{
+	// Crinado um ponteiro para o Arquivo de Serviços
+	FILE *arquivoServicos;
+	
+	// Abre o Arquivo Binário no modo de Escrita e Leitura
+	arquivoServicos = fopen("dados_servicos", "rb+");
+	
+	// Posiciona o ponteiro no início do arquivo para substituir os dados já carregados (SEEK_SET)
+	fseek(arquivoServicos, 0, SEEK_SET);
+	
+	// Gravando os Dados dos Faxineiros no Arquivo Binário
+	fwrite(servico, sizeof(Servico), *contadorServicos, arquivoServicos); // o contadorCadastros representa quantos servicos estão sendo gravados
+	
+	// Fecha o Arquivo após a Leitura dos Dados ou a Criação do Arquivo
+	fclose(arquivoServicos);
+}
 
 int verificarServico(Servico *servico, char cpfFaxineiro[], char cpfCliente[], int dataServico[], int contadorServicos)
 {
@@ -1273,8 +1195,12 @@ int excluirServico(Servico *servico, int *contadorServicos)
 
 void menuServicos(Servico *servico, int *contadorServicos, Faxineiro *faxineiro, int *contadorFaxineiros, Cliente *cliente, int *contadorClientes) 
 {
+	// Carrega os dados do Arquivo de Faxineiros para o vetor faxineiro e para o contadorFaxineiros
+	lendoDadosFaxineiros(faxineiro, &(*contadorFaxineiros));
+	// Carrega os dados do Arquivo de Clientes para o vetor cliente e para o contadorClientes
+	lendoDadosClientes(cliente, &(*contadorClientes));
 	// Carrega os dados do Arquivo de Serviços para o vetor servico e para o contadorServicos
-	lendoDadosDoArquivo(0, 0, servico, &(*contadorServicos));
+	lendoDadosServicos(servico, &(*contadorServicos));
 	
 	int opcao;
 	system("cls");
@@ -1352,10 +1278,8 @@ void menuServicos(Servico *servico, int *contadorServicos, Faxineiro *faxineiro,
 			case 6: {
 				system("cls");
 				printf("Voltando para o menu principal...\n\n");
-				
 				// Grava os dados do vetor servico e do contadorServicos para o Arquivo de Serviços
-				gravandoDadosNoArquivo(0, 0, servico, &(*contadorServicos));
-				
+				gravandoDadosServicos(servico, &(*contadorServicos));
 				break;
 			}
 			default: {
@@ -1366,10 +1290,357 @@ void menuServicos(Servico *servico, int *contadorServicos, Faxineiro *faxineiro,
 		}
 	}while (opcao != 6);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void diferencaDatas(int dataInicial[], int dataFinal[], int *diferencaDias, int *diferencaMeses, int *diferencaAnos)
+{
+	struct tm data1 = {0};
+	struct tm data2 = {0};
+
+	data1.tm_year = dataInicial[0] - 1900;
+	data1.tm_mon = dataInicial[1] - 1;
+	data1.tm_mday = dataInicial[2];
+	data2.tm_year = dataFinal[0] - 1900;
+	data2.tm_mon = dataFinal[1] - 1;
+	data2.tm_mday = dataFinal[2];
+
+	time_t segundos1 = mktime(&data1);
+	time_t segundos2 = mktime(&data2);
+
+	double diferenca = difftime(segundos2, segundos1);
+	*diferencaDias = diferenca / 86400;
+	*diferencaMeses = *diferencaDias / 30; // Considerando meses de 30 dias (ajuste se necessário)
+	*diferencaAnos = *diferencaMeses / 12;
+}
+
+int relatorio1(Servico *servico, int *contadorServicos, Faxineiro *faxineiro, int *contadorFaxineiros, Cliente *cliente, int *contadorClientes)
+{
+	FILE *arquivo; // Ponteiro para o arquivo
+	char nomeDoArquivo[256]; // 256 máximo de caracteres para o nome de um arquivo
+	
+	printf("Digite o nome do arquivo para salvar o relatório ou sobrescrevê-lo: ");
+	scanf("%s", nomeDoArquivo);
+    strcat(nomeDoArquivo, ".txt");
+    
+	arquivo = fopen(nomeDoArquivo, "w"); // Abre o arquivo para escrita ("w")
+
+	char cpfFaxineiro[50];
+	int achou;
+
+	printf("\nInforme o CPF do Faxineiro: ");
+	fflush(stdin);
+	gets(cpfFaxineiro);
+	achou = verificarFaxineiro(faxineiro, cpfFaxineiro, *contadorFaxineiros); // chama a função que verifica se já existe um faxineiro com esse cpf
+	if (achou == -1)
+	{
+		fclose(arquivo); // Fecha o arquivo após o uso
+		remove(nomeDoArquivo); // excluir o arquivo caso não haja os dados necessários  
+		return -1;
+	}
+	else
+	{
+		int dataInicial[3], dataFinal[3], i;
+		int faxineiroCont = 0;
+
+		printf("\nInforme a data inicial: \n");
+		fprintf(arquivo, "\nInforme a data inicial: \n");
+		printf("Dia: ");
+		scanf("%d", &dataInicial[0]);
+		printf("Mês: ");
+		scanf("%d", &dataInicial[1]);
+		printf("Ano: ");
+		scanf("%d", &dataInicial[2]);
+		fprintf(arquivo, "%d/%d/%d: \n", dataInicial[0], dataInicial[1], dataInicial[2]);
+
+		printf("\nInforme a data final: \n");
+		fprintf(arquivo, "Informe a data final: \n");
+		printf("Dia: ");
+		scanf("%d", &dataFinal[0]);
+		printf("Mêss: ");
+		scanf("%d", &dataFinal[1]);
+		printf("Ano: ");
+		scanf("%d", &dataFinal[2]);
+		fprintf(arquivo, "%d/%d/%d: \n", dataFinal[0], dataFinal[1], dataFinal[2]);
+
+		int diferencaDias, diferencaMeses, diferencaAnos;
+
+		diferencaDatas(dataInicial, dataFinal, &diferencaDias, &diferencaMeses, &diferencaAnos); // chama a função que calcula a diferença entre as datas
+
+		for (i = 0; i < *contadorServicos; i++)
+		{
+			if (strcmp(servico[i].cpfFaxineiro, cpfFaxineiro) == 0)
+			{
+				// Comparação de datas
+				int diaServico = servico[i].dataServico[0];
+				int mesServico = servico[i].dataServico[1];
+				int anoServico = servico[i].dataServico[2];
+
+				if ((anoServico > dataInicial[2] || (anoServico == dataInicial[2] && mesServico > dataInicial[1]) ||
+					 (anoServico == dataInicial[2] && mesServico == dataInicial[1] && diaServico >= dataInicial[0])) &&
+					(anoServico < dataFinal[2] || (anoServico == dataFinal[2] && mesServico < dataFinal[1]) ||
+					 (anoServico == dataFinal[2] && mesServico == dataFinal[1] && diaServico <= dataFinal[0])))
+				{
+
+					char cpfCliente[50];
+					strcpy(cpfCliente, servico[i].cpfCliente);
+					achou = verificarCliente(cliente, cpfCliente, *contadorClientes);
+					printf("\nContratou serviço neste período: \n");
+					fprintf(arquivo, "\nContratou serviço neste período: \n");
+					printf("Nome do Cliente: %s\n", cliente[achou].nome);
+					fprintf(arquivo, "Nome: %s\n", cliente[achou].nome);
+					printf("E-mails: | ");
+					fprintf(arquivo, "E-mails: | ");
+					int y;
+					for (y = 0; cliente[achou].email[y][0] != '\0'; y++)
+					{
+						printf("%s | ", cliente[achou].email[y]);
+						fprintf(arquivo, "%s | ", cliente[achou].email[y]);
+					}
+					printf("\nTelefones: | ");
+					fprintf(arquivo, "\nTelefones: | ");
+					for (y = 0; cliente[achou].telefone[y][0] != '\0'; y++)
+					{
+						printf("%s | ", cliente[achou].telefone[y]);
+						fprintf(arquivo, "%s | ", cliente[achou].telefone[y]);
+					}
+					faxineiroCont++;
+					printf("\n\n");
+					fprintf(arquivo, "\n");
+				}
+			}
+		}
+		if (faxineiroCont == 0)
+		{
+			fclose(arquivo); // Fecha o arquivo após o uso
+			remove(nomeDoArquivo); // excluir o arquivo caso não haja os dados necessários  
+			return -2;
+		}
+	}
+	fclose(arquivo); // Fecha o arquivo após o uso
+	return 1;
+}
+
+int relatorio2(Servico *servico, int *contadorServicos, Faxineiro *faxineiro, int *contadorFaxineiros, Cliente *cliente, int *contadorClientes)
+{
+	FILE *arquivo; // Ponteiro para o arquivo
+	char nomeDoArquivo[256]; // 256 máximo de caracteres para o nome de um arquivo
+	
+	printf("Digite o nome do arquivo para salvar o relatório ou sobrescrevê-lo: ");
+	scanf("%s", nomeDoArquivo);
+    strcat(nomeDoArquivo, ".txt");
+    
+	arquivo = fopen(nomeDoArquivo, "w"); // Abre o arquivo para escrita ("w")
+	
+	int data[3], i, y, achouFaxineiro, achouCliente, contadorServicosFaxineiro = 0;
+	
+	printf("Informe a data específica: \n");
+	printf("Dia: ");
+	scanf("%d", &data[0]);
+	printf("Mês: ");
+	scanf("%d", &data[1]);
+	printf("Ano: ");
+	scanf("%d", &data[2]);
+	
+	for (i = 0; i < *contadorServicos; i++) {
+		if (servico[i].dataServico[0] == data[0] && servico[i].dataServico[1] == data[1] && servico[i].dataServico[2] == data[2]) {
+			printf("\nServiço realizado no dia %d/%d/%d: \n", data[0], data[1], data[2]);
+			fprintf(arquivo, "\nDados dos Serviços para o dia %d/%d/%d: \n", data[0], data[1], data[2]);
+			
+			printf("\nData do Serviço: %d/%d/%d\n", servico[i].dataServico[0], servico[i].dataServico[1], servico[i].dataServico[2]);
+			fprintf(arquivo, "\nData do Serviço: %d/%d/%d\n", servico[i].dataServico[0], servico[i].dataServico[1], servico[i].dataServico[2]);
+			printf("Valor do Serviço: %.2f\n", servico[i].valorServico);
+			fprintf(arquivo, "Valor do Serviço: %.2f\n", servico[i].valorServico);
+			
+			printf("CPF do Faxineiro: %s\n", servico[i].cpfFaxineiro);
+			fprintf(arquivo, "CPF do Faxineiro: %s\n", servico[i].cpfFaxineiro);
+			achouFaxineiro = verificarFaxineiro(faxineiro, servico[i].cpfFaxineiro, *contadorFaxineiros); // procura o endereço do faxineiro no vetor de faxineiros
+			printf("Nome do Faxineiro: %s\n", faxineiro[achouFaxineiro].nome);
+			fprintf(arquivo, "Nome do Faxineiro: %s\n", faxineiro[achouFaxineiro].nome);
+			
+			printf("CPF do Cliente: %s\n", servico[i].cpfCliente);
+			fprintf(arquivo, "CPF do Cliente: %s\n", servico[i].cpfCliente);
+			achouCliente = verificarCliente(cliente, servico[i].cpfCliente, *contadorClientes); // procura o endereço do cliente no vetor de faxineiros
+			printf("Nome do Cliente: %s\n", cliente[achouCliente].nome);
+			fprintf(arquivo, "Nome do Cliente: %s\n", cliente[achouCliente].nome);
+			
+			contadorServicosFaxineiro++;
+		}
+	}
+	if (contadorServicosFaxineiro == 0) {
+		fclose(arquivo);
+		remove(nomeDoArquivo); // excluir o arquivo caso não haja os dados necessários  
+		return -1;
+	}
+	printf("\n");
+	fprintf(arquivo, "\n");
+	fclose(arquivo); // Fecha o arquivo após o uso
+	return 1;
+}
+
+int relatorio3(Servico *servico, int *contadorServicos, Faxineiro *faxineiro, int *contadorFaxineiros)
+{
+	FILE *arquivo; // Ponteiro para o arquivo
+	char nomeDoArquivo[256]; // 256 máximo de caracteres para o nome de um arquivo
+	
+	printf("Digite o nome do arquivo para salvar o relatório ou sobrescrevê-lo: ");
+	scanf("%s", nomeDoArquivo);
+    strcat(nomeDoArquivo, ".txt");
+    
+	arquivo = fopen(nomeDoArquivo, "w"); // Abre o arquivo para escrita ("w")
+	
+	char cpfFaxineiro[50];
+	int achou, i;
+
+	printf("Informe o CPF do Faxineiro: ");
+	fflush(stdin);
+	gets(cpfFaxineiro);
+	achou = verificarFaxineiro(faxineiro, cpfFaxineiro, *contadorFaxineiros); // chama a função que verifica se já existe um faxineiro com esse cpf
+	if (achou == -1)
+	{
+		return -1;
+	}
+	else
+	{
+		int i, contadorServicosFaxineiro = 0;
+		
+		printf("\nDados do Faxineiro: \n");
+		fprintf(arquivo, "\nDados do Faxineiro: \n");
+		printf("CPF: %s\n", faxineiro[achou].cpf);
+		fprintf(arquivo, "CPF: %s\n", faxineiro[achou].cpf);
+		printf("Nome: %s\n", faxineiro[achou].nome);
+		fprintf(arquivo, "Nome: %s\n", faxineiro[achou].nome);
+		printf("RG: %s\n", faxineiro[achou].rg);
+		fprintf(arquivo, "RG: %s\n", faxineiro[achou].rg);
+		printf("Sexo: %s\n", faxineiro[achou].sexo);
+		fprintf(arquivo, "Sexo: %s\n", faxineiro[achou].sexo);
+		printf("Data de nascimento: ");
+		fprintf(arquivo, "Data de nascimento: ");
+		printf("%d/%d/%d\n", faxineiro[achou].dataNascimento[0], faxineiro[achou].dataNascimento[1], faxineiro[achou].dataNascimento[2]);
+		fprintf(arquivo, "%d/%d/%d\n", faxineiro[achou].dataNascimento[0], faxineiro[achou].dataNascimento[1], faxineiro[achou].dataNascimento[2]);
+		printf("Telefones: | ");
+		fprintf(arquivo, "Telefones: | ");
+		for (i = 0; faxineiro[achou].telefone[i][0] != '\0'; i++)
+		{
+			printf("%s | ", faxineiro[achou].telefone[i]);
+			fprintf(arquivo, "%s | ", faxineiro[achou].telefone[i]);
+		}
+		printf("\n\nDados dos Serviços: \n");
+		fprintf(arquivo, "\n\nDados dos Serviços: \n");
+		for (i = 0; i < *contadorServicos; i++)
+		{
+			if (strcmp(servico[i].cpfFaxineiro, cpfFaxineiro) == 0)
+			{
+				printf("\nData do Serviço: %d/%d/%d\n", servico[i].dataServico[0], servico[i].dataServico[1], servico[i].dataServico[2]);
+				fprintf(arquivo, "\nData do Serviço: %d/%d/%d\n", servico[i].dataServico[0], servico[i].dataServico[1], servico[i].dataServico[2]);
+				printf("CPF do Faxineiro: %s\n", servico[i].cpfFaxineiro);
+				fprintf(arquivo, "CPF do Faxineiro: %s\n", servico[i].cpfFaxineiro);
+				printf("CPF do Cliente: %s\n", servico[i].cpfCliente);
+				fprintf(arquivo, "CPF do Cliente: %s\n", servico[i].cpfCliente);
+				printf("Valor do Serviço: %.2f\n", servico[i].valorServico);
+				fprintf(arquivo, "Valor do Serviço: %.2f\n", servico[i].valorServico);
+				contadorServicosFaxineiro++;
+			}
+		}
+		if (contadorServicosFaxineiro == 0)
+		{
+			fclose(arquivo); // Fecha o arquivo após o uso
+			remove(nomeDoArquivo); // excluir o arquivo caso não haja os dados necessários  
+			return -2;
+		}
+	}
+	printf("\n");
+	fprintf(arquivo, "\n");
+	fclose(arquivo); // Fecha o arquivo após o uso
+	return 1;
+}
+
+void menuRelatorios(Servico *servico, int *contadorServicos, Faxineiro *faxineiro, int *contadorFaxineiros, Cliente *cliente, int *contadorClientes)
+{
+	// Carrega os dados do Arquivo de Faxineiros para o vetor faxineiro e para o contadorFaxineiros
+	lendoDadosFaxineiros(faxineiro, &(*contadorFaxineiros));
+	// Carrega os dados do Arquivo de Clientes para o vetor cliente e para o contadorClientes
+	lendoDadosClientes(cliente, &(*contadorClientes));
+	// Carrega os dados do Arquivo de Serviços para o vetor servico e para o contadorServicos
+	lendoDadosServicos(servico, &(*contadorServicos));
+	
+	int opcao;
+	system("cls");
+
+	do
+	{
+		printf("\nAbrindo Submenu de Relatórios...\n");
+		printf("\nMenu de Relatórios: \n");
+		printf("1. Mostrar o nome, os e-mails e telefones de todos(as) os(as) clientes que contrataram o serviço de determinado(a) faxineiro(a) entre as datas X e Y.\nO CPF do(a) faxineiro(a) e as datas deverão ser fornecidos pelo usuário;\n");
+		printf("\n");
+		printf("2. Mostrar os dados de todos os serviços contratados para uma data específica a ser fornecida pelo usuário.\nApresente também o nome do(a) faxineiro(a) e do(a) cliente;\n");
+		printf("\n");
+		printf("3. Mostrar os dados de todos os serviços realizados por determinado(a) faxineiro(a), cujo CPF será fornecido pelo usuário.\n");
+		printf("\n");
+		printf("4. Voltar para o Menu Principal\n");
+		printf("Entre com a opção: ");
+		scanf("%d", &opcao);
+		printf("\n");
+
+		switch (opcao) {
+			case 1:
+			{
+				system("cls");
+				int resultado = relatorio1(servico, &(*contadorServicos), faxineiro, &(*contadorFaxineiros), cliente, &(*contadorClientes));
+				if (resultado == -1)
+				{
+					printf("\nNão existe nenhum Faxineiro com esse CPF no Sistema!\n");
+				}
+				else if (resultado == -2)
+				{
+					printf("\nEsse faxineiro não possui nenhum serviço entre as datas fornecidas...\n");
+				}
+				break;
+			}
+			case 2:
+			{
+				system("cls");
+				int resultado = relatorio2(servico, &(*contadorServicos), faxineiro, &(*contadorFaxineiros), cliente, &(*contadorClientes));
+				if (resultado == -1)
+				{
+					printf("\nNão existe nenhum Serviço cadastrado com esses dados no Sistema!\n\n");
+				}
+				break;
+			}
+			case 3:
+			{
+				system("cls");
+				int resultado = relatorio3(servico, &(*contadorServicos), faxineiro, &(*contadorFaxineiros));
+				if (resultado == -1)
+				{
+					printf("\nNão existe nenhum Faxineiro com esse CPF no Sistema!\n\n");
+				}
+				else if (resultado == -2)
+				{
+					printf("\nNão foi possível realizar o relatório pois não existe nenhum serviço realizado por esse Faxineiro!\n\n");
+				}
+				break;
+			}
+			case 4:
+			{
+				system("cls");
+				printf("Voltando para o menu principal...\n\n");
+				break;
+			}
+			default:
+			{
+				system("cls");
+				printf("Opção inválida, tente novamente!\n\n");
+				break;
+			}
+		}
+	} while (opcao != 4);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 main () {
 	setlocale(LC_ALL, "Portuguese"); 
-	int op, limiteSistema = 100; 
+	int op, limiteSistema = 100;
 	int contadorFaxineiros = 0, contadorClientes = 0, contadorServicos = 0; // contador para quantos faxineiros/clientes/servicos estão inseridos no sistema
 	
 	// faxineiro é um ponteiro para uma vetor que armazena registros Faxineiro
@@ -1408,6 +1679,7 @@ main () {
 			
 			case 4: { // caso a opção digitada for 4
 				printf("Abrindo Submenu de Relatórios...\n");
+				menuRelatorios(servico, &contadorServicos, faxineiro, &contadorFaxineiros, cliente, &contadorClientes);
 				menuPrincipal(&op);
 				break;
 			}
@@ -1426,29 +1698,9 @@ main () {
 		}
 		if (op == 5) {
 			printf("Finalizando o programa...");
+			free(faxineiro);
+			free(cliente);
+			free(servico);
 		}
 	}while (op != 5); // mantém o Menu Principal em loop até que op seja igual a 5
 }
-
-
-/* 
-TALVEZ PRECISE:
-
-malloc pode retornar NULL se não houver memória disponível.
-if (faxineiro == NULL) {
-    printf("Erro na alocação de memória.\n");
-    exit(1); // Ou tome alguma outra ação apropriada em caso de erro.
-    
-    
-
-case 5: {
-    // Liberar a memória alocada para o vetor de Faxineiros antes de sair
-    for (int i = 0; i < contadorFaxineiros; i++) {
-        free(faxineiro[i].nome); // Liberar memória alocada para o nome de cada Faxineiro
-        free(faxineiro[i].sexo); // Liberar memória alocada para o sexo de cada Faxineiro
-        free(faxineiro[i].dataNascimento); // Liberar memória alocada para a dataNascimento de cada Faxineiro
-    }
-    free(faxineiro); // Liberar a memória alocada para o vetor de Faxineiros
-    printf("Finalizando o programa...\n");
-    break;
-}*/
